@@ -1,4 +1,4 @@
-# Metal-Slug-3-AutoSplitter
+# Metal-Slug-4-AutoSplitter
 An AutoSplitter for Metal Slug 4.
 Tested on:
   - WinKawaks 1.65
