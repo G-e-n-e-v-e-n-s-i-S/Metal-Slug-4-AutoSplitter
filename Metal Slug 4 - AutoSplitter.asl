@@ -1,4 +1,4 @@
-﻿
+
 
 
 state("WinKawaks")
@@ -152,7 +152,7 @@ startup
 
 
 	//The split/state we are currently on
-	vars.splitCounter = 5;
+	vars.splitCounter = 0;
 	
 }
 
@@ -247,7 +247,7 @@ exit
 	//The pointers and watchers are no longer valid
 	vars.pointerBossHealth = IntPtr.Zero;
 
-	vars.watcherBossHealth = null;
+	vars.watcherBossHealth = new MemoryWatcher<short>(IntPtr.Zero);
 
 }
 
@@ -297,7 +297,7 @@ reset
 		
 		vars.pointerBossHealth = IntPtr.Zero;
 
-		vars.watcherBossHealth = null;
+		vars.watcherBossHealth = new MemoryWatcher<short>(IntPtr.Zero);
 
 		return true;
 	}
