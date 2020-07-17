@@ -218,6 +218,25 @@ init
 	
 	
 	
+	//The grey of the UI
+	//Starts at pixel ( 80 , 8 )
+	vars.colorsUI = new byte[]				{
+												184,	168,	160,	0,
+												184,	168,	160,	0,
+												184,	168,	160,	0,
+												184,	168,	160,	0,
+												184,	168,	160,	0,
+												184,	168,	160,	0,
+												184,	168,	160,	0,
+												184,	168,	160,	0,
+												184,	168,	160,	0,
+												184,	168,	160,	0
+											};
+
+	vars.offsetUI = 0x2740;
+		
+		
+		
 	//The wreckage of the pink robot, just before the last phase
 	//Starts at pixel ( 20 , 188 )
 	vars.colorsBossStart = new byte[]		{
@@ -342,26 +361,42 @@ split
 
 
 	//Missions 1, 2, 3, 4 and 5
-	if (vars.splitCounter< 5)
+	if (vars.splitCounter < 10)
 	{
 		
-		//Split when the exclamation mark from the "Mission Complete !" text is in the right spot
-		byte[] pixels = vars.ReadArray(game, vars.offsetExclamationMark);
-
-		if (vars.MatchArray(pixels, vars.colorsExclamationMark))
+		if (vars.splitCounter % 2 == 0)
 		{
-			vars.splitCounter++;
 			
-			vars.prevSplitTime = Environment.TickCount;
+			//Check for the exclamation mark from the "Mission Complete !" text
+			byte[] pixels = vars.ReadArray(game, vars.offsetExclamationMark);
 			
-			return true;
+			if (vars.MatchArray(pixels, vars.colorsExclamationMark))
+			{
+				vars.splitCounter++;
+			}
+		}
+
+		else
+		{
+
+			//Split when the UI disappears after we've seen the exclamation mark
+			byte[] pixels = vars.ReadArray(game, vars.offsetUI);
+			
+			if (!vars.MatchArray(pixels, vars.colorsUI))
+			{
+				vars.splitCounter++;
+			
+				vars.prevSplitTime = Environment.TickCount;
+			
+				return true;
+			}
 		}
 	}
 
 
 
 	//Knowing when we get to the last boss
-	else if (vars.splitCounter == 5)
+	else if (vars.splitCounter == 10)
 	{
 		
 		//When the pink robot is rekt
@@ -391,7 +426,7 @@ split
 
 
 	//Finding the boss's health variable
-	else if (vars.splitCounter == 6)
+	else if (vars.splitCounter == 11)
 	{
 		
 		//Check time since last scan, don't scan if we already scanned in the last 3 seconds
@@ -443,7 +478,7 @@ split
 
 
 	//Check that the boss's health has been reset above 0
-	else if (vars.splitCounter == 7)
+	else if (vars.splitCounter == 12)
 	{
 		
 		vars.watcherBossHealth.Update(game);
@@ -465,7 +500,7 @@ split
 
 
 	//Check that the boss's health has been reduced to 0
-	else if (vars.splitCounter == 8)
+	else if (vars.splitCounter == 13)
 	{
 
 		//Update watcher
