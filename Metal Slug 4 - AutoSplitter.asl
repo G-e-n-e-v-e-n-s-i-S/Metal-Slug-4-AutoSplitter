@@ -6,6 +6,11 @@ state("WinKawaks")
 	int pointerScreen : 0x0046B270;
 }
 
+state("fcadefbneo")
+{
+	int pointerScreen : 0x02CC2280, 0x4, 0x4, 0x14;
+}
+
 
 
 
@@ -18,9 +23,7 @@ startup
 	{
 
 		IntPtr pointer = IntPtr.Zero;
-
-
-
+		
 		foreach (var page in process.MemoryPages())
 		{
 
@@ -31,9 +34,7 @@ startup
 			if (pointer != IntPtr.Zero) break;
 
 		}
-
-
-
+		
 		return pointer;
 
 	};
@@ -42,13 +43,13 @@ startup
 
 
 
-	//A function that reads an array of 40 bytes in the screen memory
+	//A function that reads an array of 60 bytes in the screen memory
 	Func<Process, int, byte[]> ReadArray = (process, offset) =>
 	{
 
-		byte[] bytes = new byte[40];
+		byte[] bytes = new byte[60];
 
-		bool succes = ExtensionMethods.ReadBytes(process, vars.pointerScreen + offset, 40, out bytes);
+		bool succes = ExtensionMethods.ReadBytes(process, vars.pointerScreen + offset, 60, out bytes);
 
 		if (!succes)
 		{
@@ -72,7 +73,7 @@ startup
 			return false;
 		}
 
-		for (int i = 0; i < bytes.Length; i++)
+		for (int i = 0; i < bytes.Length && i < colors.Length; i++)
 		{
 
 			if (bytes[i] != colors[i])
@@ -181,84 +182,187 @@ init
 	 * On the WinKawaks version, the offset is X * 0x4 + Y * 0x500
 	 * 
 	 */
+	if(game.ProcessName.Equals("WinKawaks"))
+	{
+
+		//The background at the start of mission 1, mingled with the fade in
+		//Appears 2.15 seconds before the character hits the ground
+		//Starts at pixel ( 2 , 99 )
+		vars.colorsRunStart = new byte[]		{
+													80,  104, 136, 0,
+													0,   0,   0,   0,
+													48,  88,  120, 0,
+													0,   0,   0,   0,
+													0,   24,  32,  0,
+													0,   0,   0,   0,
+													48,  72,  80,  0,
+													0,   0,   0,   0,
+													48,  72,  80,  0,
+													0,   0,   0,   0,
+												};
+		
+		vars.offsetRunStart = 0x1D648;
 	
+	
+	
+		//The exclamation mark in the Mission Complete !" text
+		//Starts at pixel ( 247 , 113 )
+		vars.colorsExclamationMark = new byte[] {
+													0,   0,   0,   0,
+													248, 248, 248, 0,
+													0,   0,   120, 0,
+													48,  208, 248, 0,
+													24,  144, 248, 0,
+													48,  208, 248, 0,
+													24,  144, 248, 0,
+													48,  208, 248, 0,
+													248, 248, 248, 0,
+													0,   0,   0,   0
+												};
+
+		vars.offsetExclamationMark = 0x21C9C;
+	
+	
+	
+		//The grey of the UI
+		//Starts at pixel ( 80 , 8 )
+		vars.colorsUI = new byte[]				{
+													184, 168, 160, 0,
+													184, 168, 160, 0,
+													184, 168, 160, 0,
+													184, 168, 160, 0,
+													184, 168, 160, 0,
+													184, 168, 160, 0,
+													184, 168, 160, 0,
+													184, 168, 160, 0,
+													184, 168, 160, 0,
+													184, 168, 160, 0
+												};
+
+		vars.offsetUI = 0x2740;
+		
+		
+		
+		//The wreckage of the pink robot, just before the last phase
+		//Starts at pixel ( 20 , 188 )
+		vars.colorsBossStart = new byte[]		{
+													32,  32,  40,  0,
+													80,  88,  96,  0,
+													216, 216, 216, 0,
+													216, 216, 216, 0,
+													16,  0,   24,  0,
+													40,  0,   56,  0,
+													80,  32,  120, 0,
+													72,  0,   96,  0,
+													72,  0,   96,  0,
+													80,  32,  120, 0
+												};
+		
+		vars.offsetBossStart = 0x37D50;
+	
+	}
 
 
-	//The background at the start of mission 1, mingled with the fade in
-	//Appears 2.15 seconds before the character hits the ground
-	//Starts at pixel ( 2 , 99 )
-	vars.colorsRunStart = new byte[]		{
-												80,  104, 136, 0,
-												0,   0,   0,   0,
-												48,  88,  120, 0,
-												0,   0,   0,   0,
-												0,   24,  32,  0,
-												0,   0,   0,   0,
-												48,  72,  80,  0,
-												0,   0,   0,   0,
-												48,  72,  80,  0,
-												0,   0,   0,   0,
-											};
-		
-	vars.offsetRunStart = 0x1D648;
-	
-	
-	
-	//The exclamation mark in the Mission Complete !" text
-	//Starts at pixel ( 247 , 113 )
-	vars.colorsExclamationMark = new byte[] {
-												0,   0,   0,   0,
-												248, 248, 248, 0,
-												0,   0,   120, 0,
-												48,  208, 248, 0,
-												24,  144, 248, 0,
-												48,  208, 248, 0,
-												24,  144, 248, 0,
-												48,  208, 248, 0,
-												248, 248, 248, 0,
-												0,   0,   0,   0
-											};
 
-	vars.offsetExclamationMark = 0x21C9C;
-	
-	
-	
-	//The grey of the UI
-	//Starts at pixel ( 80 , 8 )
-	vars.colorsUI = new byte[]				{
-												184, 168, 160, 0,
-												184, 168, 160, 0,
-												184, 168, 160, 0,
-												184, 168, 160, 0,
-												184, 168, 160, 0,
-												184, 168, 160, 0,
-												184, 168, 160, 0,
-												184, 168, 160, 0,
-												184, 168, 160, 0,
-												184, 168, 160, 0
-											};
+	else //if (game.ProcessName.Equals("fcadefbneo"))
+	{
 
-	vars.offsetUI = 0x2740;
+		//The background at the start of mission 1, mingled with the fade in
+		//Appears 2.15 seconds before the character hits the ground
+		//Starts at pixel ( 2 , 99 )
+		vars.colorsRunStart = new byte[]		{
+													82,  107, 140, 0,
+													82,  107, 140, 0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													49,  90,  123, 0,
+													49,  90,  123, 0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   24,  33,  0,
+													0,   24,  33,  0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													49,  74,  82,  0,
+													49,  74,  82,  0,
+													0,   0,   0,   0
+												};
 		
-		
-		
-	//The wreckage of the pink robot, just before the last phase
-	//Starts at pixel ( 20 , 188 )
-	vars.colorsBossStart = new byte[]		{
-												32,  32,  40,  0,
-												80,  88,  96,  0,
-												216, 216, 216, 0,
-												216, 216, 216, 0,
-												16,  0,   24,  0,
-												40,  0,   56,  0,
-												80,  32,  120, 0,
-												72,  0,   96,  0,
-												72,  0,   96,  0,
-												80,  32,  120, 0
-											};
-		
-	vars.offsetBossStart = 0x37D50;
+		vars.offsetRunStart = 0x75910;
 	
+	
+	
+		//The exclamation mark in the Mission Complete !" text
+		//Starts at pixel ( 247 , 113 )
+		vars.colorsExclamationMark = new byte[] {
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													0,   0,   123, 0,
+													0,   0,   123, 0,
+													49,  214, 255, 0,
+													49,  214, 255, 0,
+													24,  148, 255, 0,
+													24,  148, 255, 0,
+													49,  214, 255, 0,
+													49,  214, 255, 0,
+													24,  148, 255, 0,
+													24,  148, 255, 0,
+													49,  214, 255, 0
+												};
+
+		vars.offsetExclamationMark = 0x86AB8;
+	
+	
+	
+		//The grey of the UI
+		//Starts at pixel ( 80 , 8 )
+		vars.colorsUI = new byte[]				{
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0
+												};
+
+		vars.offsetUI = 0x9A80;
+		
+		
+		
+		//The wreckage of the pink robot, just before the last phase
+		//Starts at pixel ( 20 , 188 )
+		vars.colorsBossStart = new byte[]		{
+													33,  33,  41,  0,
+													33,  33,  41,  0,
+													82,  90,  99,  0,
+													82,  90,  99,  0,
+													222, 222, 222, 0,
+													222, 222, 222, 0,
+													222, 222, 222, 0,
+													222, 222, 222, 0,
+													16,  0,   24,  0,
+													16,  0,   24,  0,
+													41,  0,   57,  0,
+													41,  0,   57,  0,
+													82,  33,  123, 0,
+													82,  33,  123, 0,
+													74,  0,   99,  0
+												};
+		
+		vars.offsetBossStart = 0xDF4A0;
+	
+	}
 }
 
 
@@ -296,13 +400,13 @@ update
 	if (vars.pointerScreen != IntPtr.Zero)
 	{
 		
-		//Debug print
 		/*
+		//Debug print
 		if (vars.localTickCount % 10 == 0)
 		{
-			print("[MS4 AutoSplitter] " + vars.splitCounter.ToString() + " - " + "RunStart");
+			print("[MS4 AutoSplitter] Debug " + vars.splitCounter.ToString());
 			
-			vars.PrintArray(vars.ReadArray(game, vars.offsetRunStart));
+			vars.PrintArray(vars.ReadArray(game, vars.offsetBossStart));
 		}
 		*/
 
