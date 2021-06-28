@@ -230,7 +230,8 @@ init
 	
 	
 		//The grey of the UI
-		//Starts at pixel ( 80 , 8 )
+		//Starts at pixel ( 80 , 8 ) for player 1
+		//Starts at pixel ( 176 , 8 ) for player 2
 		vars.colorsUI = new byte[]				{
 													184, 168, 160, 0,
 													184, 168, 160, 0,
@@ -245,6 +246,8 @@ init
 												};
 
 		vars.offsetUI = 0x2740;
+		
+		vars.offsetUI2 = 0x28C0;
 		
 		
 		
@@ -322,7 +325,8 @@ init
 	
 	
 		//The grey of the UI
-		//Starts at pixel ( 80 , 8 )
+		//Starts at pixel ( 80 , 8 ) for player 1
+		//Starts at pixel ( 176 , 8 ) for player 2
 		vars.colorsUI = new byte[]				{
 													189, 173, 165, 0,
 													189, 173, 165, 0,
@@ -343,7 +347,9 @@ init
 
 		vars.offsetUI = 0x9A80;
 		
+		vars.offsetUI2 = 0x9D80;
 		
+
 		
 		//The wreckage of the pink robot, just before the last phase
 		//Starts at pixel ( 20 , 188 )
@@ -529,8 +535,10 @@ split
 
 			//Split when the UI disappears after we've seen the exclamation mark
 			byte[] pixels = vars.ReadArray(game, vars.offsetUI);
+
+			byte[] pixels2 = vars.ReadArray(game, vars.offsetUI2);
 			
-			if (!vars.MatchArray(pixels, vars.colorsUI))
+			if (!vars.MatchArray(pixels, vars.colorsUI) && !vars.MatchArray(pixels2, vars.colorsUI))
 			{
 				vars.splitCounter++;
 			
