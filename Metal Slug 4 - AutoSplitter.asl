@@ -413,7 +413,7 @@ update
 	if (vars.pointerScreen != IntPtr.Zero)
 	{
 		
-		
+		/*
 		//Debug print
 		if (vars.localTickCount % 20 == 0)
 		{
@@ -421,7 +421,7 @@ update
 			
 			vars.PrintArray(vars.ReadArray(game, vars.offsetBossStart));
 		}
-		
+		*/
 
 		
 	
@@ -437,15 +437,6 @@ update
 		else
 		{
 			vars.restart = vars.MatchArray(vars.ReadArray(game, vars.offsetRunStart), vars.colorsRunStart);
-		}
-	}
-	
-	else
-	{
-		//Debug print
-		if (vars.localTickCount % 20 == 0)
-		{
-			print("[MS4 AutoSplitter] Cannot Find Screen");
 		}
 	}
 }
