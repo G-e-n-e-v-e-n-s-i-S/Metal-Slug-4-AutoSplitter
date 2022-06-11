@@ -412,15 +412,15 @@ update
 	if (vars.pointerScreen != IntPtr.Zero)
 	{
 		
-		/*
+		
 		//Debug print
-		if (vars.localTickCount % 10 == 0)
+		if (vars.localTickCount % 20 == 0)
 		{
 			print("[MS4 AutoSplitter] Debug " + vars.splitCounter.ToString());
 			
 			vars.PrintArray(vars.ReadArray(game, vars.offsetBossStart));
 		}
-		*/
+		
 
 		
 	
